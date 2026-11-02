@@ -1,0 +1,43 @@
+
+# Python environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# IDE files
+.idea/
+.vs/
+.vscode/
+
+# Secrets
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+credentials.json
+secrets.json
+*.pem
+*.key
+
+# Raw dataset
+data/raw/*
+!data/raw/.gitkeep
+
+# Generated processed data
+data/processed/*
+!data/processed/.gitkeep
+
+# Generated files
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/

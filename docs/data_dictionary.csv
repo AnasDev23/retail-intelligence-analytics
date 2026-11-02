@@ -1,0 +1,24 @@
+table_or_file,column,type,origin,description
+Source workbook (online_retail_II.xlsx),Invoice,text,SOURCE,"Invoice number (6 digits). Per UCI: a code starting with 'C' indicates a cancellation. Workbook header may read Invoice or InvoiceNo."
+Source workbook (online_retail_II.xlsx),StockCode,text,SOURCE,Product (item) code; 5-digit integral number per distinct product per UCI. Non-product codes (e.g. postage) also occur and are classified by this project.
+Source workbook (online_retail_II.xlsx),Description,text,SOURCE,Product name.
+Source workbook (online_retail_II.xlsx),Quantity,integer,SOURCE,Quantity of each product per transaction line. Negative values occur (cancellations and other adjustments).
+Source workbook (online_retail_II.xlsx),InvoiceDate,datetime,SOURCE,Date and time the transaction was generated.
+Source workbook (online_retail_II.xlsx),UnitPrice,decimal,SOURCE,Product price per unit in pounds sterling (GBP). Workbook header may read Price or UnitPrice.
+Source workbook (online_retail_II.xlsx),CustomerID,integer,SOURCE,"Customer number (5-digit). Pseudonymous identifier; missing for many lines. Workbook header may read 'Customer ID'."
+Source workbook (online_retail_II.xlsx),Country,text,SOURCE,Name of the country where the customer resides.
+stg_invoice_lines.csv / dbo.stg_InvoiceLines,SourceSheet,text,DERIVED (provenance),Name of the workbook sheet the row came from.
+stg_invoice_lines.csv / dbo.stg_InvoiceLines,SourceRow,integer,DERIVED (provenance),Excel row number in the source sheet (header = row 1).
+fact_invoice_lines.csv / dbo.FactInvoiceLines,LineType,text,DERIVED (rule),"SALE | CANCELLATION | ADJUSTMENT | STOCK_ADJUSTMENT | ZERO_PRICE | OTHER_ANOMALY. First matching rule: invoice starts C -> CANCELLATION; starts A -> ADJUSTMENT; price<0 -> OTHER_ANOMALY; quantity<=0 -> STOCK_ADJUSTMENT; price=0 -> ZERO_PRICE; else SALE."
+fact_invoice_lines.csv / dbo.DimProducts,ProductKind,text,DERIVED (rule),PRODUCT if StockCode matches 5 digits + up to 2 letters (after UPPER/TRIM); otherwise NON_PRODUCT (postage/fees/manual etc.). Heuristic - review reports.
+fact_invoice_lines.csv / dbo.FactInvoiceLines,LineRevenue,decimal,DERIVED (formula),Quantity x UnitPrice in GBP. Negative for cancellations.
+fact_invoice_lines.csv / dbo.FactInvoiceLines,IsDuplicateWithinSheet,boolean,DERIVED (flag),True for the 2nd+ occurrence of an identical line (all 8 source fields) inside one sheet. Retained; may be genuine.
+fact_invoice_lines.csv,YearMonth,text,DERIVED,yyyy-mm of InvoiceDate (added when loaded by the app / DimDate in SQL).
+dbo.DimProducts,Description,text,DERIVED (most frequent),Most frequent non-null description for the StockCode.
+dbo.DimProducts,DescriptionVariants,integer,DERIVED,Number of distinct descriptions seen for the StockCode.
+dbo.DimCustomers,FirstSeen / LastSeen,datetime,DERIVED,Earliest and latest invoice timestamp for the CustomerID.
+dbo.DimCountries,CountryKey,integer,DERIVED (surrogate key),Surrogate key for Country.
+dbo.DimDate,DateKey / FullDate / Year / Quarter / Month / YearMonth / DayName,various,DERIVED (calendar),Calendar attributes for each date in the data range.
+reports/quality_before.csv,check / severity / issue_count / pct_of_rows / note,various,DERIVED (profiling),Data-quality findings on the typed raw data. Severity ERROR blocks processing; WARNING and INFO are reported.
+reports/cleaning_log.csv,step / rule / rows_affected / rationale,various,DERIVED (audit),Every transformation applied and the number of rows affected.
+reports/rejected_rows.csv,RejectReason + source fields,various,DERIVED (audit),Rows that could not be interpreted (unparseable date/quantity/price or missing invoice/stockcode). Never silently dropped.

@@ -1,0 +1,33 @@
+# Business Questions (answerable from this dataset)
+
+Dataset: UCI Online Retail II (real transactions, UK online gift-ware retailer, GBP). Findings are **calculated by running the SQL/dashboard**, never pre-written. "SQL Qnn" refers to `sql/04_business_analysis_queries.sql`.
+
+1. What are net revenue, gross sales, invoice count and average invoice value for the period? (SQL Q01)
+2. How does net revenue change month over month? (Q02)
+3. How does each month compare with the same month in the previous year? (Q03)
+4. What is the cumulative revenue trajectory? (Q04)
+5. Which quarters contribute the most revenue? (Q05)
+6. Which products drive the most net revenue? (Q06)
+7. Which products sell the most units? (Q07)
+8. How concentrated is revenue - how many products make 80% of it? (Q08)
+9. Which products have the highest cancellation rates? (Q09)
+10. Which unit-price bands generate the most revenue? (Q10)
+11. Which countries generate the most revenue, and how dependent is the business on the UK? (Q11)
+12. Which countries cancel more than average? (Q12)
+13. Who are the top customers? (Q13)
+14. How much revenue comes from the top 10% of customers? (Q14)
+15. What share of identified customers are repeat buyers? (Q15)
+16. How do RFM segments differ in size and value? (Q16)
+17. Do customers acquired in a given month keep buying? (cohorts, Q17)
+18. How long between a repeat customer's orders? (Q18)
+19. Which weekday/hour is busiest? (Q19)
+20. How do cancellations trend over time? (Q20)
+21. What other line types (zero price, stock adjustments, bad-debt adjustments) exist and how big are they? (Q21)
+22. Which customers have no product sales at all? (Q22)
+23. What does a typical basket look like? (Q23)
+24. How is revenue spread across invoice-value bands (wholesale-style vs small orders)? (Q24)
+25. What share of sales lines has no Customer ID, limiting customer analysis? (dashboard, Q-DQ in script 05)
+26. Do the revenue totals reconcile across views and the fact table? (script 05)
+
+## Questions the data CANNOT answer (no relevant fields)
+Profit/margin, discount impact, delivery performance, product categories, customer demographics, marketing channel, true per-order return rate.
